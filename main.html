@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irina's Age</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #age-display {
+            font-size: 24px;
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="age-display"></div>
+
+    <script>
+        function getWeekday(dateString) {
+            const date = new Date(dateString);
+            const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            return weekdays[date.getDay()];
+        }
+
+        function getAllWednesdaysInLife(input) {
+            const datesArray = [];
+            let currentDate = new Date(input);
+            const endDate = new Date();
+
+            while (currentDate < endDate) {
+                if (currentDate.toISOString().split('T')[0] !== input && getWeekday(currentDate) === 'Wednesday') {
+                    datesArray.push(currentDate.toISOString().split('T')[0]);
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            return datesArray;
+        }
+
+        function countBirthdays(birthday) {
+            const first = new Date(birthday);
+            const endDate = new Date();
+            let count = 0;
+            const wednesdays = getAllWednesdaysInLife(birthday);
+            const secondWednesdays = wednesdays.filter((_, i) => i % 2 !== 0);
+
+            while (first < endDate) {
+                const currentDate = first.toISOString().split('T')[0];
+                if (currentDate !== birthday && getWeekday(first) !== 'Wednesday') {
+                    count++;
+                } else if (secondWednesdays.includes(currentDate)) {
+                    // Double Birthday
+                } else if (getWeekday(first) === 'Wednesday') {
+                    count++;
+                }
+                first.setFullYear(first.getFullYear() + 1);
+            }
+            return count + secondWednesdays.length;
+        }
+
+        const birthday = '1996-07-24';
+        const age = countBirthdays(birthday);
+        document.getElementById('age-display').textContent = `Irina is ${age} years old today`;
+    </script>
+</body>
+</html>
